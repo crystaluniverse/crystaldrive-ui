@@ -59,6 +59,7 @@ func addServerFlags(flags *pflag.FlagSet) {
 	flags.String("socket", "", "socket to listen to (cannot be used with address, port, cert nor key flags)")
 	flags.StringP("baseurl", "b", "", "base url")
 	flags.Int("img-resize-workers", 4, "image service workers count")
+	flags.Bool("img-resize-disable", false, "disable image resizing")
 }
 
 var rootCmd = &cobra.Command{
@@ -215,6 +216,9 @@ func getRunParams(flags *pflag.FlagSet, st *storage.Storage) *settings.Server {
 	if isAddrSet && server.Socket != "" {
 		server.Socket = ""
 	}
+
+	_, disableImgResize := getParamB(flags, "img-resize-disable")
+	server.ResizeImg = !disableImgResize
 
 	return server
 }

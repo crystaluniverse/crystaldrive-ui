@@ -24,7 +24,7 @@ type ImgService interface {
 	Resize(ctx context.Context, file afero.File, width, height int, out io.Writer, options ...img.Option) error
 }
 
-func previewHandler(imgSvc ImgService) handleFunc {
+func previewHandler(imgSvc ImgService, enableResize bool) handleFunc {
 	return withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
 		if !d.user.Perm.Download {
 			return http.StatusAccepted, nil
@@ -50,14 +50,15 @@ func previewHandler(imgSvc ImgService) handleFunc {
 
 		switch file.Type {
 		case "image":
-			return handleImagePreview(imgSvc, w, r, file, size)
+			return handleImagePreview(imgSvc, w, r, file, size, enableResize)
 		default:
 			return http.StatusNotImplemented, fmt.Errorf("can't create preview for %s type", file.Type)
 		}
 	})
 }
 
-func handleImagePreview(imgSvc ImgService, w http.ResponseWriter, r *http.Request, file *files.FileInfo, size string) (int, error) {
+func handleImagePreview(imgSvc ImgService, w http.ResponseWriter, r *http.Request,
+	file *files.FileInfo, size string, enableResize bool) (int, error) {
 	format, err := imgSvc.FormatFromExtension(file.Extension)
 	if err != nil {
 		// Unsupported extensions directly return the raw data
@@ -73,7 +74,7 @@ func handleImagePreview(imgSvc ImgService, w http.ResponseWriter, r *http.Reques
 	}
 	defer fd.Close()
 
-	if format == img.FormatGif && size == sizeBig {
+	if !enableResize || (format == img.FormatGif && size == sizeBig) {
 		if _, err := rawFileHandler(w, r, file); err != nil {
 			return errToStatus(err), err
 		}
