@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/spf13/afero"
 
 	"github.com/filebrowser/filebrowser/v2/files"
 	"github.com/filebrowser/filebrowser/v2/img"
@@ -21,7 +20,7 @@ const (
 
 type ImgService interface {
 	FormatFromExtension(ext string) (img.Format, error)
-	Resize(ctx context.Context, file afero.File, width, height int, out io.Writer, options ...img.Option) error
+	Resize(ctx context.Context, in io.Reader, width, height int, out io.Writer, options ...img.Option) error
 }
 
 func previewHandler(imgSvc ImgService, enableResize bool) handleFunc {
@@ -91,11 +90,11 @@ func handleImagePreview(imgSvc ImgService, w http.ResponseWriter, r *http.Reques
 	case sizeBig:
 		width = 1080
 		height = 1080
-		options = append(options, img.WithHighPriority())
+		options = append(options, img.WithMode(img.ResizeModeFit), img.WithQuality(img.QualityMedium))
 	case sizeThumb:
 		width = 128
 		height = 128
-		options = append(options, img.WithMode(img.ResizeModeFill), img.WithQuality(img.QualityLow))
+		options = append(options, img.WithMode(img.ResizeModeFill), img.WithQuality(img.QualityLow), img.WithFormat(img.FormatJpeg))
 	default:
 		return http.StatusBadRequest, fmt.Errorf("unsupported preview size %s", size)
 	}
