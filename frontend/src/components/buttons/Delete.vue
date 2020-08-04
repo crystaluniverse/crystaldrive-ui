@@ -8,6 +8,7 @@
 <script>
 export default {
   name: 'delete-button',
+ 
   methods: {
     show: function () {
       this.$store.commit('showHover', 'delete')

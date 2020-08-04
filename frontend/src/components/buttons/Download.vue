@@ -1,5 +1,5 @@
 <template>
-  <button @click="download" :aria-label="$t('buttons.download')" :title="$t('buttons.download')" id="download-button" class="action">
+  <button v-if="!shared_dir" @click="download" :aria-label="$t('buttons.download')" :title="$t('buttons.download')" id="download-button" class="action">
     <i class="material-icons">file_download</i>
     <span>{{ $t('buttons.download') }}</span>
     <span v-if="selectedCount > 0" class="counter">{{ selectedCount }}</span>
@@ -14,7 +14,10 @@ export default {
   name: 'download-button',
   computed: {
     ...mapState(['req', 'selected']),
-    ...mapGetters(['isListing', 'selectedCount'])
+    ...mapGetters(['isListing', 'selectedCount']),
+    shared_dir: function() {
+      return this.$route.path == "/files/shared/"
+    },
   },
   methods: {
     download: function () {

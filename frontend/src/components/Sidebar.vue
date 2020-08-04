@@ -6,7 +6,7 @@
         <span>{{ $t('sidebar.myFiles') }}</span>
       </router-link>
 
-      <div v-if="user.perm.create">
+      <div v-if="!shared_dir">
         <button @click="$store.commit('showHover', 'newDir')" class="action" :aria-label="$t('sidebar.newFolder')" :title="$t('sidebar.newFolder')">
           <i class="material-icons">create_new_folder</i>
           <span>{{ $t('sidebar.newFolder') }}</span>
@@ -70,13 +70,17 @@ export default {
     version: () => version,
     disableExternal: () => disableExternal,
     noAuth: () => noAuth,
-    authMethod: () => authMethod
+    authMethod: () => authMethod,
+    shared_dir: function() {
+      return this.$route.path == "/files/shared/" || (this.$route.path.startsWith("/files/shared/") && this.$route.path.split("/").filter(item => item !== "").length == 3)
+    }
   },
   methods: {
     help () {
       this.$store.commit('showHover', 'help')
     },
-    logout: auth.logout
+    logout: auth.logout,
+    
   }
 }
 </script>
