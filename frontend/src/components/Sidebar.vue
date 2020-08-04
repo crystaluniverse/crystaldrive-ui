@@ -19,9 +19,9 @@
       </div>
 
       <div>
-        <router-link class="action" to="/settings" :aria-label="$t('sidebar.settings')" :title="$t('sidebar.settings')">
+        <router-link class="action" to="/files/shared/" :aria-label="$t('sidebar.shared')" :title="$t('sidebar.shared')">
           <i class="material-icons">settings_applications</i>
-          <span>{{ $t('sidebar.settings') }}</span>
+          <span>{{ $t('sidebar.shared') }}</span>
         </router-link>
 
         <button v-if="authMethod == 'json'" @click="logout" class="action" id="logout" :aria-label="$t('sidebar.logout')" :title="$t('sidebar.logout')">
