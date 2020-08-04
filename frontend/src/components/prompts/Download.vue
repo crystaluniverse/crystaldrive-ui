@@ -6,14 +6,7 @@
 
     <div class="card-content">
       <p>{{ $t('prompts.downloadMessage') }}</p>
-
-      <button class="button button--block" @click="download('zip')" v-focus>zip</button>
-      <button class="button button--block" @click="download('tar')" v-focus>tar</button>
-      <button class="button button--block" @click="download('targz')" v-focus>tar.gz</button>
-      <button class="button button--block" @click="download('tarbz2')" v-focus>tar.bz2</button>
-      <button class="button button--block" @click="download('tarxz')" v-focus>tar.xz</button>
-      <button class="button button--block" @click="download('tarlz4')" v-focus>tar.lz4</button>
-      <button class="button button--block" @click="download('tarsz')" v-focus>tar.sz</button>
+      <button class="button button--block" @click="download('zip')" v-focus>{{ $t('prompts.download') }}</button>
     </div>
   </div>
 </template>
