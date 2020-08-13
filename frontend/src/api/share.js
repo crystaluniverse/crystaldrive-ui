@@ -30,3 +30,43 @@ export async function create(url, expires = '', unit = 'hours') {
     method: 'POST'
   })
 }
+
+export async function shareWithUsers(path, userList){
+  const body = JSON.stringify(userList)
+  const url = `/api/share${path}`
+  return fetchJSON(url, {
+    method: 'POST',
+    body
+  })
+}
+// export async function deleteUserAccess(path, user){
+//   let body = { user}
+//   body = JSON.stringify(body)
+//   const url = `/api/share${path}`
+//   return fetchJSON(url, {
+//     method: 'POST',
+//     body
+//   })
+// }
+export async function deleteAllShares(path){
+  return fetchURL(`/api/share${path}`, {
+    method: 'DELETE'
+  })
+}
+export async function listUserpermissions(path){
+  return fetchJSON(`/api/share${path}`)
+}
+
+
+
+export async function getShareableLink(url, permissions){
+  return fetchURL(`/api/share/link${url}?permission=${permissions}`)
+}
+export async function deleteSharableLink(uuid){
+  return fetchURL(`/api/share/link${uuid}`, {
+    method: 'DELETE'
+  })
+}
+export async function listLinks(path){
+  return fetchJSON(`/api/share/links${path}}`)
+}
