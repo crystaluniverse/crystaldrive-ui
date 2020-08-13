@@ -36,7 +36,8 @@ export async function shareWithUsers(path, userList){
   const url = `/api/share${path}`
   return fetchJSON(url, {
     method: 'POST',
-    body
+    body,
+    headers: {"content-type": "application/json"}
   })
 }
 // export async function deleteUserAccess(path, user){

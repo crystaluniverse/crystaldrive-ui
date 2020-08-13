@@ -249,7 +249,7 @@ export default {
     ...mapGetters(["isListing"]),
     url() {
       if (!this.isListing) {
-        return this.$route.path;
+        return this.$route.path.replace("/files/", "/");
       }
 
       if (this.selectedCount === 0 || this.selectedCount > 1) {
@@ -257,7 +257,7 @@ export default {
         return;
       }
 
-      return this.req.items[this.selected[0]].url;
+      return this.req.items[this.selected[0]].url.replace("/files/", "/");
     },
     permissionList() {
       return Array.from(this.sharePermissions, (x) => x.name);
