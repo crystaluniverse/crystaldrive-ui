@@ -5,7 +5,6 @@
     </div>
     <div class="card-content">
       <v-data-table
-        dark
         :headers="userheaders"
         :items="userpermissions"
         :search="userSearch"
@@ -31,7 +30,7 @@
                   hide-details
                 ></v-text-field>
                 <v-btn class="ml-2" :disabled="selectedUsersCount == 0"
-                  ><i class="material-icons" dark small>delete</i>
+                  ><i class="material-icons" small>delete</i>
                   <span v-if="selectedUsersCount > 0">{{
                     selectedUsersCount
                   }}</span></v-btn
@@ -41,14 +40,10 @@
           </v-toolbar>
         </template>
         <template v-slot:item.permission="{ item }">
-          {{ permissionToHumanReadable(item.permission)}}
+          {{ permissionToHumanReadable(item.permission) }}
         </template>
         <template v-slot:item.action="{ item }">
-          <i
-            class="material-icons"
-            dark
-            small
-            @click="deleteUserAccess(item.name)"
+          <i class="material-icons" small @click="deleteUserAccess(item.name)"
             >delete</i
           >
         </template>
@@ -57,7 +52,6 @@
       <v-row dense align="center">
         <v-col cols="8">
           <v-text-field
-            dark
             v-model="users"
             clearable
             label="Insert 3bot names comma seperated"
@@ -67,9 +61,10 @@
         <v-col cols="2">
           <v-select
             class="permissions"
-            dark
             v-model="sharePermission"
-            :items="permissionList"
+            :items="sharePermissions"
+            item-value="value"
+            item-text="name"
           >
           </v-select>
         </v-col>
@@ -81,7 +76,6 @@
       </v-row>
 
       <v-data-table
-        dark
         :headers="linkheaders"
         :items="existingLinks"
         item-key="uuid"
@@ -98,7 +92,7 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-btn class="mr-3" :disabled="selectedLinksCount == 0"
-                ><i class="material-icons" dark small>delete</i>
+                ><i class="material-icons" small>delete</i>
                 <span v-if="selectedLinksCount > 0">{{
                   selectedLinksCount
                 }}</span></v-btn
@@ -107,10 +101,10 @@
           </v-toolbar>
         </template>
         <template v-slot:item.permission="{ item }">
-          {{ permissionToHumanReadable(item.permission)}}
+          {{ permissionToHumanReadable(item.permission) }}
         </template>
         <template v-slot:item.action="{ item }">
-          <i class="material-icons" dark small @click="deleteLink(item.uuid)"
+          <i class="material-icons" small @click="deleteLink(item.uuid)"
             >delete</i
           >
         </template>
@@ -121,9 +115,10 @@
           <v-select
             dense
             class="permissions"
-            dark
             v-model="sharePermission"
-            :items="permissionList"
+            :items="sharePermissions"
+            item-value="value"
+            item-text="name"
           >
           </v-select>
         </v-col>
@@ -295,11 +290,11 @@ export default {
     this.clip.on("success", () => {
       this.$showSuccess(this.$t("success.linkCopied"));
     });
-    this.sharePermission = this.sharePermissions[0].name;
-    this.linkPermission = this.sharePermissions[0].name;
+    this.sharePermission = this.sharePermissions[0].value;
+    this.linkPermission = this.sharePermissions[0].value;
 
-    // this.userpermissions = api.listUserpermissions(this.url)
-    // this.existingLinks = api.listLinks(this.url)
+    // this.userpermissions = api.listUserpermissions(this.url);
+    // this.existingLinks = api.listLinks(this.url);
   },
   beforeDestroy() {
     this.clip.destroy();
@@ -340,18 +335,18 @@ export default {
     //     this.$showError(e);
     //   }
     // },
-    mapUserPermission(users, permission){
-      return users.map(user => {
+    mapUserPermission(users, permission) {
+      return users.map((user) => {
         return {
-          "name": user,
-          "permission": permission
-          }
-      })
+          name: user,
+          permission: permission,
+        };
+      });
     },
     shareUsers: async function() {
       let users = this.users.split(",");
-      users = this.mapUserPermission(users, this.sharePermission)
-      console.log(users)
+      users = this.mapUserPermission(users, this.sharePermission);
+      console.log(users);
       try {
         await api.shareWithUsers(this.url, users);
       } catch (e) {
@@ -360,9 +355,9 @@ export default {
       }
     },
     deleteUserAccess: async function(user) {
-      user = this.mapUserPermission([user], "")
-      console.log(user)
-      await api.shareWithUsers(this.url, user );
+      user = this.mapUserPermission([user], "");
+      console.log(user);
+      await api.shareWithUsers(this.url, user);
     },
     deleteAllShares: async function() {
       await api.deleteAllShares(this.url);
