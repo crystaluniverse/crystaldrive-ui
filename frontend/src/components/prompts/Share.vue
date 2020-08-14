@@ -193,12 +193,6 @@ export default {
       users: "",
       sharePermission: "",
       userpermissions: [
-        { name: "hamdy", permission: "rw-" },
-        { name: "tobias", permission: "r--" },
-        { name: "ivan", permission: "r--" },
-        { name: "alex", permission: "rwd" },
-        { name: "mathias", permission: "r--" },
-        { name: "jonas", permission: "r--" },
       ],
       selectedUsers: [],
       userSearch: "",
@@ -293,9 +287,7 @@ export default {
     this.sharePermission = this.sharePermissions[0].value;
     this.linkPermission = this.sharePermissions[0].value;
 
-    api.listUserpermissions(this.url).then(res => {
-      this.userpermissions =  res
-    });
+    this.getUserPermissions()
     // this.existingLinks = api.listLinks(this.url);
   },
   beforeDestroy() {
@@ -305,6 +297,11 @@ export default {
     permissionToHumanReadable(permission) {
       return this.sharePermissions.find((perm) => permission == perm.value)
         .name;
+    },
+    getUserPermissions(){
+      api.listUserpermissions(this.url).then(res => {
+        this.userpermissions =  res
+      });
     },
     submit: async function() {
       if (!this.time) return;
@@ -351,7 +348,10 @@ export default {
       console.log(users);
       try {
         const res = await api.shareWithUsers(this.url, users);
-        console.log(res);
+        if(res.status == 200){
+          this.getUserPermissions()
+          this.users = ""
+        }
       } catch (e) {
         console.log(e);
         this.$showError(e);
@@ -359,8 +359,10 @@ export default {
     },
     deleteUserAccess: async function(user) {
       user = this.mapUserPermission([user], "");
-      console.log(user);
-      await api.shareWithUsers(this.url, user);
+      const res = await api.shareWithUsers(this.url, user);
+      if(res.status == 200){
+          this.getUserPermissions()
+      }
     },
     deleteAllShares: async function() {
       await api.deleteAllShares(this.url);
