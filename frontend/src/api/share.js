@@ -61,7 +61,7 @@ export async function listUserpermissions(path){
 
 
 export async function getShareableLink(url, permissions){
-  return fetchURL(`/api/share/link${url}?permission=${permissions}`)
+  return fetchJSON(`/api/share/link${url}?permission=${permissions}`)
 }
 export async function deleteSharableLink(uuid){
   return fetchURL(`/api/share/link${uuid}`, {
@@ -69,5 +69,5 @@ export async function deleteSharableLink(uuid){
   })
 }
 export async function listLinks(path){
-  return fetchJSON(`/api/share/links${path}}`)
+  return fetchJSON(`/api/share/links${path}`)
 }

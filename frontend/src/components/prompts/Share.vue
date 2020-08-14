@@ -129,6 +129,7 @@
         </v-col>
         <v-spacer></v-spacer>
       </v-row>
+      A new link has been created: {{newLink}}
     </div>
 
     <div class="card-action">
@@ -202,40 +203,10 @@ export default {
         { text: "Acces right", value: "permission" },
         { text: "Action", value: "action" },
       ],
-      existingLinks: [
-        {
-          link: "https://threefold.io/DDN4L34M6N434RJ3",
-          permission: "rw-",
-          uuid: "blah",
-        },
-        {
-          link: "https://threefold.io/DDN4L34M6N434RJ3",
-          permission: "rw-",
-          uuid: "ads",
-        },
-        {
-          link: "https://threefold.io/DDN4L34M6N434RJ3",
-          permission: "rw-",
-          uuid: "fdf",
-        },
-        {
-          link: "https://threefold.io/DDN4L34M6N434RJ3",
-          permission: "rw-",
-          uuid: "qw",
-        },
-        {
-          link: "https://threefold.io/DDN4L34M6N434RJ3",
-          permission: "rw-",
-          uuid: "AE",
-        },
-        {
-          link: "https://threefold.io/DDN4L34M6N434RJ3",
-          permission: "rw-",
-          uuid: "ff",
-        },
-      ],
+      existingLinks: [],
       linkPermission: "",
       selectedLinks: [],
+      newLink: ""
     };
   },
   computed: {
@@ -288,7 +259,7 @@ export default {
     this.linkPermission = this.sharePermissions[0].value;
 
     this.getUserPermissions()
-    // this.existingLinks = api.listLinks(this.url);
+    // this.getLinks()
   },
   beforeDestroy() {
     this.clip.destroy();
@@ -301,6 +272,11 @@ export default {
     getUserPermissions(){
       api.listUserpermissions(this.url).then(res => {
         this.userpermissions =  res
+      });
+    },
+    getLinks(){
+      api.listLinks(this.url).then(res => {
+        this.existingLinks =  res
       });
     },
     submit: async function() {
@@ -368,10 +344,11 @@ export default {
       await api.deleteAllShares(this.url);
     },
     getLink: async function() {
-      await api.getShareableLink(this.url, this.linkPermission);
+      this.newLink = await api.getShareableLink(this.url, this.linkPermission);
     },
     deleteLink: async function(uuid) {
       await api.deleteSharableLink(uuid);
+      this.getLinks()
     },
     humanTime(time) {
       return moment(time * 1000).fromNow();
