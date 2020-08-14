@@ -262,7 +262,7 @@ export default {
     this.linkPermission = this.sharePermissions[0].value;
 
     this.getUserPermissions()
-    // this.getLinks()
+    this.getLinks()
   },
   beforeDestroy() {
     this.clip.destroy();
