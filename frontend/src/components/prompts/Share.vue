@@ -82,7 +82,6 @@
         :headers="linkheaders"
         :items="existingLinks"
         item-key="uuid"
-        show-select
         v-model="selectedLinks"
         :footer-props="{ 'items-per-page-options': [5, 10, 15, -1] }"
         :items-per-page="5"
@@ -91,23 +90,27 @@
           <v-toolbar flat>
             <v-row align="center">
               <v-col cols="4">
-                People who have access
+                Available links
               </v-col>
-              <v-spacer></v-spacer>
+              <!--<v-spacer></v-spacer>
               <v-btn class="mr-3" :disabled="selectedLinksCount == 0"
                 ><i class="material-icons" small>delete</i>
                 <span v-if="selectedLinksCount > 0">{{
                   selectedLinksCount
-                }}</span></v-btn
-              >
+                }}</span></v-btn>-->
             </v-row>
           </v-toolbar>
         </template>
+
+        <template v-slot:item.link="{item}">
+          {{createLinkFromHash(item.hash)}}
+        </template>
+      
         <template v-slot:item.permission="{ item }">
           {{ permissionToHumanReadable(item.permission) }}
         </template>
         <template v-slot:item.action="{ item }">
-          <i class="material-icons" small @click="deleteLink(item.uuid)"
+          <i class="material-icons" small @click="deleteLink(item.hash)"
             >delete</i
           >
         </template>
@@ -118,7 +121,7 @@
           <v-select
             dense
             class="permissions"
-            v-model="sharePermission"
+            v-model="linkPermission"
             :items="sharePermissions"
             item-value="value"
             item-text="name"
@@ -132,8 +135,10 @@
         </v-col>
         <v-spacer></v-spacer>
       </v-row>
-      A new link has been created: {{ newLink }}
-    </div>
+      <span v-if="newLink">
+        A new link has been created: {{ createLinkFromHash(newLink.hash) }}
+      </span>
+    </div> 
 
     <div class="card-action">
       <button
@@ -202,7 +207,7 @@ export default {
       userSearch: "",
 
       linkheaders: [
-        { text: "URL", value: "link" },
+        { text: "Link", value: "link" },
         { text: "Acces right", value: "permission" },
         { text: "Action", value: "action" },
       ],
@@ -368,6 +373,9 @@ export default {
         return new Date(a.expire) - new Date(b.expire);
       });
     },
+    createLinkFromHash(hash){
+      return `${window.origin}/shared/${hash}`
+    }
   },
 };
 </script>
