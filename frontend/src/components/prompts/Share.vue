@@ -293,7 +293,9 @@ export default {
     this.sharePermission = this.sharePermissions[0].value;
     this.linkPermission = this.sharePermissions[0].value;
 
-    // this.userpermissions = api.listUserpermissions(this.url);
+    api.listUserpermissions(this.url).then(res => {
+      this.userpermissions =  res
+    });
     // this.existingLinks = api.listLinks(this.url);
   },
   beforeDestroy() {
@@ -348,7 +350,8 @@ export default {
       users = this.mapUserPermission(users, this.sharePermission);
       console.log(users);
       try {
-        await api.shareWithUsers(this.url, users);
+        const res = await api.shareWithUsers(this.url, users);
+        console.log(res);
       } catch (e) {
         console.log(e);
         this.$showError(e);

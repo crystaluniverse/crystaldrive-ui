@@ -34,7 +34,7 @@ export async function create(url, expires = '', unit = 'hours') {
 export async function shareWithUsers(path, userList){
   const body = JSON.stringify(userList)
   const url = `/api/share${path}`
-  return fetchJSON(url, {
+  return fetchURL(url, {
     method: 'POST',
     body,
     headers: {"content-type": "application/json"}
