@@ -29,7 +29,10 @@
                   single-line
                   hide-details
                 ></v-text-field>
-                <v-btn class="ml-2" :disabled="selectedUsersCount == 0"
+                <v-btn
+                  class="ml-2"
+                  :disabled="selectedUsersCount == 0"
+                  @click="deleteMultipleUsers"
                   ><i class="material-icons" small>delete</i>
                   <span v-if="selectedUsersCount > 0">{{
                     selectedUsersCount
@@ -129,7 +132,7 @@
         </v-col>
         <v-spacer></v-spacer>
       </v-row>
-      A new link has been created: {{newLink}}
+      A new link has been created: {{ newLink }}
     </div>
 
     <div class="card-action">
@@ -300,16 +303,6 @@ export default {
         this.$showError(e);
       }
     },
-    // deleteLink: async function(event, link) {
-    //   event.preventDefault();
-    //   try {
-    //     await api.remove(link.hash);
-    //     if (link.expire === 0) this.hasPermanent = false;
-    //     this.links = this.links.filter((item) => item.hash !== link.hash);
-    //   } catch (e) {
-    //     this.$showError(e);
-    //   }
-    // },
     mapUserPermission(users, permission) {
       return users.map((user) => {
         return {
@@ -336,6 +329,18 @@ export default {
     deleteUserAccess: async function(user) {
       user = this.mapUserPermission([user], "");
       const res = await api.shareWithUsers(this.url, user);
+      if(res.status == 200){
+          this.getUserPermissions()
+      }
+    },
+    deleteMultipleUsers: async function(){
+      const users = this.selectedUsers.map(user => {
+        return {
+          name: user.name,
+          permission: ""
+        }
+      })
+      const res = await api.shareWithUsers(this.url, users);
       if(res.status == 200){
           this.getUserPermissions()
       }
