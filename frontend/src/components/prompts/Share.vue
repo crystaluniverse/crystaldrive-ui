@@ -110,7 +110,7 @@
           {{ permissionToHumanReadable(item.permission) }}
         </template>
         <template v-slot:item.action="{ item }">
-          <i class="material-icons" small @click="deleteLink(item.hash)"
+          <i class="material-icons" small @click="deleteLink(item.path, item.permission)"
             >delete</i
           >
         </template>
@@ -356,8 +356,8 @@ export default {
     getLink: async function() {
       this.newLink = await api.getShareableLink(this.url, this.linkPermission);
     },
-    deleteLink: async function(uuid) {
-      await api.deleteSharableLink(uuid);
+    deleteLink: async function(path, permission) {
+      await api.deleteSharableLink(path, permission);
       this.getLinks()
     },
     humanTime(time) {

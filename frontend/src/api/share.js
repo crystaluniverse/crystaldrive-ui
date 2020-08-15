@@ -63,8 +63,8 @@ export async function listUserpermissions(path){
 export async function getShareableLink(url, permissions){
   return fetchJSON(`/api/share/link${url}?permission=${permissions}`)
 }
-export async function deleteSharableLink(uuid){
-  return fetchURL(`/api/share/link/${uuid}`, {
+export async function deleteSharableLink(path, permission){
+  return fetchURL(`/api/share/link${path}?permission=${permission}`, {
     method: 'DELETE'
   })
 }
